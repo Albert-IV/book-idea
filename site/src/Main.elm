@@ -10,6 +10,7 @@ module Main exposing (Model(..), Msg(..), init, main, subscriptions, update, vie
 import Browser
 import Html exposing (..)
 import Http
+import List
 
 
 
@@ -37,20 +38,21 @@ type alias Book =
     { title : String
     , author : String
     , isbn : String
-    , chapters : List BookSection
+    , parts : List Part
     }
 
 
-type BookSection
-    = BookSection
-        { name : String
-        , children : ChildSection
-        , mastery : Maybe Mastery
-        }
+type alias Part =
+    { name : String
+    , mastery : Maybe Mastery
+    , chapters : List Chapter
+    }
 
 
-type ChildSection
-    = ChildSection (List BookSection)
+type alias Chapter =
+    { name : String
+    , mastery : Maybe Mastery
+    }
 
 
 type alias Mastery =
@@ -67,14 +69,10 @@ initialBook =
         "Cracking the Coding Interview"
         "AYY"
         "9010"
-        [ BookSection
-            { name = "Big O"
-            , mastery = Nothing
-            , children =
-                ChildSection
-                    [ BookSection { name = "Big-O Notation", mastery = Nothing, children = ChildSection [] }
-                    ]
-            }
+        [ Part "Big O"
+            Nothing
+            [ Chapter "Big-O Notation" Nothing
+            ]
         ]
 
 
@@ -113,10 +111,38 @@ view : Model -> Html Msg
 view model =
     case model of
         DisplayBook book ->
-            h1 []
-                [ text book.title
-                    ul
-                    []
-                    [ map (\chapter -> li [] [ text chapter.name ]) book.chapters
+            div []
+                [ h1 []
+                    [ text book.title ]
+                , div []
+                    [ displayPart
+                        book.parts
                     ]
                 ]
+
+
+displayPart : List Part -> Html Msg
+displayPart parts =
+    let
+        createPartElems =
+            \part -> li [] [ text part.name, displayChapters part.chapters ]
+
+        contents =
+            List.map createPartElems parts
+    in
+    ul [] contents
+
+
+displayChapters : List Chapter -> Html Msg
+displayChapters chapters =
+    let
+        chapterNames =
+            List.map .name chapters
+
+        createListElems =
+            \name -> li [] [ text name ]
+
+        contents =
+            List.map createListElems chapterNames
+    in
+    ul [] contents
