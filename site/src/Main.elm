@@ -81,9 +81,9 @@ view model =
                 ]
 
 
-needsMastery : Maybe Mastery -> Bool
-needsMastery mastery =
-    case mastery of
+hasValue : Maybe t -> Bool
+hasValue val =
+    case val of
         Nothing ->
             False
 
@@ -91,8 +91,8 @@ needsMastery mastery =
             True
 
 
-hasRead : Maybe Mastery -> Bool
-hasRead mastery =
+isJust : Maybe Mastery -> Bool
+isJust mastery =
     case mastery of
         Nothing ->
             False
