@@ -9,8 +9,10 @@ module Main exposing (Model(..), Msg(..), init, main, subscriptions, update, vie
 
 import Browser
 import Html exposing (..)
+import Html.Attributes exposing (..)
 import Http
 import List
+import Models as M exposing (..)
 
 
 
@@ -32,48 +34,6 @@ main =
 
 type Model
     = DisplayBook Book
-
-
-type alias Book =
-    { title : String
-    , author : String
-    , isbn : String
-    , parts : List Part
-    }
-
-
-type alias Part =
-    { name : String
-    , mastery : Maybe Mastery
-    , chapters : List Chapter
-    }
-
-
-type alias Chapter =
-    { name : String
-    , mastery : Maybe Mastery
-    }
-
-
-type alias Mastery =
-    { read : Bool
-    , examples : Bool
-    , moreResearch : Bool
-    , morePractice : Bool
-    }
-
-
-initialBook : Book
-initialBook =
-    Book
-        "Cracking the Coding Interview"
-        "AYY"
-        "9010"
-        [ Part "Big O"
-            Nothing
-            [ Chapter "Big-O Notation" Nothing
-            ]
-        ]
 
 
 init : () -> ( Model, Cmd Msg )
@@ -121,28 +81,50 @@ view model =
                 ]
 
 
+needsMastery : Maybe Mastery -> Bool
+needsMastery mastery =
+    case mastery of
+        Nothing ->
+            False
+
+        Just _ ->
+            True
+
+
+hasRead : Maybe Mastery -> Bool
+hasRead mastery =
+    case mastery of
+        Nothing ->
+            False
+
+        Just { read } ->
+            read
+
+
 displayPart : List Part -> Html Msg
 displayPart parts =
     let
         createPartElems =
-            \part -> li [] [ text part.name, displayChapters part.chapters ]
+            \part ->
+                li
+                    [ classList
+                        [ ( "has-read", hasRead part.mastery ) ]
+                    ]
+                    [ text part.name, displayChapters part.chapters ]
 
         contents =
             List.map createPartElems parts
     in
-    ul [] contents
+    ul [ class "book-parts" ] contents
 
 
 displayChapters : List Chapter -> Html Msg
 displayChapters chapters =
     let
-        chapterNames =
-            List.map .name chapters
-
         createListElems =
-            \name -> li [] [ text name ]
+            \chapter -> li [] [ text chapter.name ]
 
         contents =
-            List.map createListElems chapterNames
+            List.map createListElems chapters
     in
-    ul [] contents
+    ul [ class "book-chapters" ] contents
