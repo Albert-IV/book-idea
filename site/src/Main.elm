@@ -30,23 +30,27 @@ main =
 
 
 type Model
-    = Failure
-    | Loading
-    | Success String
-    | DisplayBook BookSection
+    = DisplayBook Book
+
+
+type alias Book =
+    { title : String
+    , author : String
+    , isbn : String
+    , chapters : List BookSection
+    }
 
 
 type BookSection
     = BookSection
-        { -- the type ChildSection is a helper to allow recursive typing here
-          children : List BookSection
+        { name : String
+        , children : ChildSection
         , mastery : Maybe Mastery
-        , name : String
         }
 
 
 type ChildSection
-    = ChildSection ()
+    = ChildSection (List BookSection)
 
 
 type alias Mastery =
@@ -57,21 +61,21 @@ type alias Mastery =
     }
 
 
-initialBook : BookSection
+initialBook : Book
 initialBook =
-    BookSection
-        { name = "Cracking the Coding Interview"
-        , mastery = Nothing
-        , children =
-            [ BookSection
-                { name = "Big O"
-                , mastery = Nothing
-                , children =
-                    [ BookSection { name = "Big-O Notation", mastery = Nothing, children = [] }
+    Book
+        "Cracking the Coding Interview"
+        "AYY"
+        "9010"
+        [ BookSection
+            { name = "Big O"
+            , mastery = Nothing
+            , children =
+                ChildSection
+                    [ BookSection { name = "Big-O Notation", mastery = Nothing, children = ChildSection [] }
                     ]
-                }
-            ]
-        }
+            }
+        ]
 
 
 init : () -> ( Model, Cmd Msg )
@@ -81,32 +85,13 @@ init _ =
     )
 
 
-
---     ( Loading
---     , Http.get
---         { url = "https://elm-lang.org/assets/public-opinion.txt"
---         , expect = Http.expectString GotText
---         }
---     )
--- UPDATE
-
-
 type Msg
-    = GotText (Result Http.Error String)
-    | SelectedBook BookSection
+    = SelectedBook Book
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        GotText result ->
-            case result of
-                Ok fullText ->
-                    ( Success fullText, Cmd.none )
-
-                Err _ ->
-                    ( Failure, Cmd.none )
-
         SelectedBook book ->
             ( DisplayBook book, Cmd.none )
 
@@ -127,14 +112,11 @@ subscriptions model =
 view : Model -> Html Msg
 view model =
     case model of
-        Failure ->
-            text "I was unable to load your book."
-
-        Loading ->
-            text "Loading..."
-
-        Success fullText ->
-            pre [] [ text fullText ]
-
         DisplayBook book ->
-            h1 [] [ text "WE DID IT BOYS!" ]
+            h1 []
+                [ text book.title
+                    ul
+                    []
+                    [ map (\chapter -> li [] [ text chapter.name ]) book.chapters
+                    ]
+                ]
