@@ -1,0 +1,25 @@
+{
+  "name": "book-idea-ui",
+  "version": "0.0.0",
+  "description": "",
+  "main": "npm start",
+  "scripts": {
+    "start": "elm-live src/Main.elm -d src -H --open -- --output=src/main.js",
+    "test": ""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/droppedoncaprica/book-idea.git"
+  },
+  "author": "Albert Engelbrecht <me@albertengelbrecht.com>",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/droppedoncaprica/book-idea/issues"
+  },
+  "homepage": "https://github.com/droppedoncaprica/book-idea#readme",
+  "devDependencies": {
+    "elm": "^0.19.0-no-deps",
+    "elm-live": "^4.0.0",
+    "elm-test": "^0.19.0-rev6"
+  }
+}

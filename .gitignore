@@ -1,1 +1,3 @@
 **/Session.vim
+site/node_modules
+site/elm-stuff

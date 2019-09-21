@@ -67,22 +67,8 @@ subscriptions model =
 -- VIEW
 
 
-view : Model -> Html Msg
-view model =
-    case model of
-        DisplayBook book ->
-            div []
-                [ h1 []
-                    [ text book.title ]
-                , div []
-                    [ displayPart
-                        book.parts
-                    ]
-                ]
-
-
-hasValue : Maybe t -> Bool
-hasValue val =
+isJust : Maybe t -> Bool
+isJust val =
     case val of
         Nothing ->
             False
@@ -91,14 +77,28 @@ hasValue val =
             True
 
 
-isJust : Maybe Mastery -> Bool
-isJust mastery =
+hasRead : Maybe Mastery -> Bool
+hasRead mastery =
     case mastery of
         Nothing ->
             False
 
         Just { read } ->
             read
+
+
+view : Model -> Html Msg
+view model =
+    case model of
+        DisplayBook book ->
+            div []
+                [ h1 []
+                    [ text book.title ]
+                , div [ class "container" ]
+                    [ displayPart
+                        book.parts
+                    ]
+                ]
 
 
 displayPart : List Part -> Html Msg
