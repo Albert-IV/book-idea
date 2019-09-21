@@ -91,10 +91,10 @@ view : Model -> Html Msg
 view model =
     case model of
         DisplayBook book ->
-            div []
+            div [ class "container" ]
                 [ h1 []
                     [ text book.title ]
-                , div [ class "container" ]
+                , div []
                     [ displayPart
                         book.parts
                     ]

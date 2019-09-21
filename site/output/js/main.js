@@ -5117,7 +5117,10 @@ var author$project$Main$view = function (model) {
 	var book = model.a;
 	return A2(
 		elm$html$Html$div,
-		_List_Nil,
+		_List_fromArray(
+			[
+				elm$html$Html$Attributes$class('container')
+			]),
 		_List_fromArray(
 			[
 				A2(
@@ -5129,10 +5132,7 @@ var author$project$Main$view = function (model) {
 					])),
 				A2(
 				elm$html$Html$div,
-				_List_fromArray(
-					[
-						elm$html$Html$Attributes$class('container')
-					]),
+				_List_Nil,
 				_List_fromArray(
 					[
 						author$project$Main$displayPart(book.parts)

@@ -4,7 +4,7 @@
   "description": "",
   "main": "npm start",
   "scripts": {
-    "start": "elm-live src/Main.elm -d src -H --open -- --output=src/main.js",
+    "start": "elm-live src/Main.elm -d output -- --output=./output/js/main.js",
     "test": ""
   },
   "repository": {

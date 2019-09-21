@@ -1,3 +1,5 @@
 **/Session.vim
 site/node_modules
 site/elm-stuff
+site/output/main.js
+site/output/js/**
