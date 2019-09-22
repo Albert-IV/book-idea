@@ -4,7 +4,7 @@
   "description": "",
   "main": "npm start",
   "scripts": {
-    "start": "elm-live src/Main.elm -d output -- --output=./output/js/main.js",
+    "start": "parcel src/index.html",
     "test": ""
   },
   "repository": {
@@ -20,6 +20,8 @@
   "devDependencies": {
     "elm": "^0.19.0-no-deps",
     "elm-live": "^4.0.0",
-    "elm-test": "^0.19.0-rev6"
-  }
+    "elm-test": "^0.19.0-rev6",
+    "parcel": "^1.12.3"
+  },
+  "dependencies": {}
 }

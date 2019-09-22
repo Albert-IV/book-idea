@@ -3,3 +3,5 @@ site/node_modules
 site/elm-stuff
 site/output/main.js
 site/output/js/**
+site/.cache/**
+site/dist

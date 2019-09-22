@@ -106,25 +106,25 @@ displayPart parts =
     let
         createPartElems =
             \part ->
-                li
-                    [ classList
-                        [ ( "has-read", hasRead part.mastery ) ]
+                div [ class "card mb-3" ]
+                    [ div [ class "card-header" ] [ text (Maybe.withDefault "" part.name) ]
+                    , displayChapters part.chapters
                     ]
-                    [ text part.name, displayChapters part.chapters ]
 
         contents =
             List.map createPartElems parts
     in
-    ul [ class "book-parts" ] contents
+    div [] contents
 
 
 displayChapters : List Chapter -> Html Msg
 displayChapters chapters =
     let
         createListElems =
-            \chapter -> li [] [ text chapter.name ]
+            \chapter ->
+                li [ class "list-group-item" ] [ text chapter.name ]
 
         contents =
             List.map createListElems chapters
     in
-    ul [ class "book-chapters" ] contents
+    ul [ class "list-group list-group-flush" ] contents
