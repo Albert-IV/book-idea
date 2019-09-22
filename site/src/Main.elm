@@ -12,7 +12,7 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Http
 import List
-import Models as M exposing (..)
+import Models exposing (..)
 
 
 
@@ -95,36 +95,125 @@ view model =
                 [ h1 []
                     [ text book.title ]
                 , div []
-                    [ displayPart
-                        book.parts
+                    [ div [] (List.map partContent book.parts)
                     ]
                 ]
 
 
-displayPart : List Part -> Html Msg
-displayPart parts =
-    let
-        createPartElems =
-            \part ->
-                div [ class "card mb-3" ]
-                    [ div [ class "card-header" ] [ text (Maybe.withDefault "" part.name) ]
-                    , displayChapters part.chapters
+partContent : Part -> Html Msg
+partContent part =
+    div [ class "card mb-3" ]
+        [ div [ class "card-header d-flex justify-content-between align-items-center" ] (buttonContent part)
+        , ul [ class "list-group list-group-flush" ] (List.map chapterContent part.chapters)
+        ]
+
+
+chapterContent : Chapter -> Html Msg
+chapterContent chapter =
+    case chapter.mastery of
+        Nothing ->
+            li [ class "list-group-item" ] [ text chapter.name ]
+
+        Just mastery ->
+            li [ class "list-group-item d-flex justify-content-between align-items-center" ] (buttonContent chapter)
+
+
+buttonContent : BookButtons a -> List (Html Msg)
+buttonContent chapterOrPart =
+    case chapterOrPart.mastery of
+        Nothing ->
+            [ text chapterOrPart.name ]
+
+        Just mastery ->
+            text chapterOrPart.name
+                :: div []
+                    [ masteryReadBtn mastery
+                    , masteryExamplesBtn mastery
+                    , masteryResearchBtn mastery
+                    , masteryPracticeBtn mastery
                     ]
-
-        contents =
-            List.map createPartElems parts
-    in
-    div [] contents
+                :: []
 
 
-displayChapters : List Chapter -> Html Msg
-displayChapters chapters =
-    let
-        createListElems =
-            \chapter ->
-                li [ class "list-group-item" ] [ text chapter.name ]
+masteryReadBtn : Mastery -> Html Msg
+masteryReadBtn mastery =
+    button
+        [ classList
+            [ ( "card-link btn", True )
+            , ( "btn-primary", mastery.read )
+            , ( "btn-danger", not mastery.read )
+            ]
+        ]
+        [ text (masteryReadText mastery) ]
 
-        contents =
-            List.map createListElems chapters
-    in
-    ul [ class "list-group list-group-flush" ] contents
+
+masteryReadText : Mastery -> String
+masteryReadText mastery =
+    if mastery.read then
+        "Chapter Read"
+
+    else
+        "Chapter Unread"
+
+
+masteryExamplesBtn : Mastery -> Html Msg
+masteryExamplesBtn mastery =
+    button
+        [ classList
+            [ ( "card-link btn", True )
+            , ( "btn-primary", mastery.examples )
+            , ( "btn-danger", not mastery.examples )
+            ]
+        ]
+        [ text (masteryExamplesText mastery) ]
+
+
+masteryExamplesText : Mastery -> String
+masteryExamplesText mastery =
+    if mastery.examples then
+        "Examples Complete"
+
+    else
+        "Examples Incomplete"
+
+
+masteryResearchBtn : Mastery -> Html Msg
+masteryResearchBtn mastery =
+    button
+        [ classList
+            [ ( "card-link btn", True )
+            , ( "btn-primary", mastery.moreResearch )
+            , ( "btn-danger", not mastery.moreResearch )
+            ]
+        ]
+        [ text (masteryResearchText mastery) ]
+
+
+masteryResearchText : Mastery -> String
+masteryResearchText mastery =
+    if mastery.moreResearch then
+        "Needs More Research"
+
+    else
+        "No Research Necessary"
+
+
+masteryPracticeBtn : Mastery -> Html Msg
+masteryPracticeBtn mastery =
+    button
+        [ classList
+            [ ( "card-link btn", True )
+            , ( "btn-primary", mastery.morePractice )
+            , ( "btn-danger", not mastery.morePractice )
+            ]
+        ]
+        [ text (masteryPracticeText mastery) ]
+
+
+masteryPracticeText : Mastery -> String
+masteryPracticeText mastery =
+    if mastery.morePractice then
+        "Needs More Practice"
+
+    else
+        "No Practice Necessary"

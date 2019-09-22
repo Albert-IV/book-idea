@@ -1,4 +1,4 @@
-module Models exposing (Book, Chapter, Mastery, Part, initialBook)
+module Models exposing (Book, BookButtons, Chapter, Mastery, Part, initialBook)
 
 
 type alias Book =
@@ -10,7 +10,7 @@ type alias Book =
 
 
 type alias Part =
-    { name : Maybe String
+    { name : String
     , mastery : Maybe Mastery
     , chapters : List Chapter
     }
@@ -20,6 +20,10 @@ type alias Chapter =
     { name : String
     , mastery : Maybe Mastery
     }
+
+
+type alias BookButtons a =
+    { a | mastery : Maybe Mastery, name : String }
 
 
 type alias Mastery =
@@ -36,18 +40,18 @@ initialBook =
         "Cracking the Coding Interview"
         "AYY"
         "9010"
-        [ Part (Just "Big O")
+        [ Part "Big O"
             Nothing
             [ Chapter "Big-O Notation" (emptyMastery True)
             ]
-        , Part (Just "Data Structures")
+        , Part "Data Structures"
             Nothing
             [ Chapter "Arrays and Strings" (emptyMastery True)
             , Chapter "Linked Lists" (emptyMastery True)
             , Chapter "Stacks and Queues" (emptyMastery True)
             , Chapter "Trees and Graphs" (emptyMastery True)
             ]
-        , Part (Just "Concepts and Algorithims")
+        , Part "Concepts and Algorithims"
             Nothing
             [ Chapter "Bit Manipulation" (emptyMastery True)
             , Chapter "Math & Logic Puzzles" (emptyMastery True)
@@ -57,15 +61,15 @@ initialBook =
             , Chapter "Sorting and Searching" Nothing
             , Chapter "Testing" Nothing
             ]
-        , Part (Just "Knowledge Based")
+        , Part "Knowledge Based"
             Nothing
             [ Chapter "C and C++" Nothing
             , Chapter "Java" Nothing
             , Chapter "Databases" Nothing
             , Chapter "Threads and Locks" Nothing
             ]
-        , Part (Just "Advanced Topics")
-            Nothing
+        , Part "Advanced Topics"
+            (emptyMastery True)
             [ Chapter "Useful Math" Nothing
             , Chapter "Topological Sort" Nothing
             , Chapter "Dijkstra's Algorithm" Nothing
@@ -76,8 +80,8 @@ initialBook =
             , Chapter "MapReduce" Nothing
             , Chapter "Additional Studying" Nothing
             ]
-        , Part (Just "Code Library")
-            Nothing
+        , Part "Code Library"
+            (emptyMastery False)
             [ Chapter "HashMapList<T,E>" Nothing
             , Chapter "TreeNode (Binary Search Tree)" Nothing
             , Chapter "LinkedListNode (Linked List)" Nothing
