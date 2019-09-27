@@ -1,10 +1,3 @@
--- Make a GET request to load a book called "Public Opinion"
---
--- Read how it works:
---   https://guide.elm-lang.org/effects/http.html
---
-
-
 module Main exposing (Model(..), Msg(..), init, main, subscriptions, update, view)
 
 import Array exposing (..)
@@ -83,7 +76,7 @@ getChapter chapterIdx partIdx book =
             Nothing
 
         Just part ->
-            get chapterIdx part.chapters
+            Array.get chapterIdx part.chapters
 
 
 toggleRead : Mastery -> Mastery
