@@ -79,22 +79,22 @@ getChapter chapterIdx partIdx book =
             Array.get chapterIdx part.chapters
 
 
-toggleRead : Mastery -> Mastery
+toggleRead : Completion -> Completion
 toggleRead mastery =
     { mastery | read = not mastery.read }
 
 
-toggleExample : Mastery -> Mastery
+toggleExample : Completion -> Completion
 toggleExample mastery =
     { mastery | examples = not mastery.examples }
 
 
-toggleResearch : Mastery -> Mastery
+toggleResearch : Completion -> Completion
 toggleResearch mastery =
     { mastery | moreResearch = not mastery.moreResearch }
 
 
-togglePractice : Mastery -> Mastery
+togglePractice : Completion -> Completion
 togglePractice mastery =
     { mastery | morePractice = not mastery.morePractice }
 
@@ -353,7 +353,7 @@ buttonContent chapterOrPart partIdx chapterIdx msgType =
                 :: []
 
 
-masteryReadBtn : Mastery -> ClickMsg -> Html Msg
+masteryReadBtn : Completion -> ClickMsg -> Html Msg
 masteryReadBtn mastery clickMsg =
     button
         [ classList
@@ -366,7 +366,7 @@ masteryReadBtn mastery clickMsg =
         [ text (masteryReadText mastery) ]
 
 
-masteryReadText : Mastery -> String
+masteryReadText : Completion -> String
 masteryReadText mastery =
     if mastery.read then
         "Chapter Read"
@@ -375,7 +375,7 @@ masteryReadText mastery =
         "Chapter Unread"
 
 
-masteryExamplesBtn : Mastery -> ClickMsg -> Html Msg
+masteryExamplesBtn : Completion -> ClickMsg -> Html Msg
 masteryExamplesBtn mastery clickMsg =
     button
         [ classList
@@ -388,7 +388,7 @@ masteryExamplesBtn mastery clickMsg =
         [ text (masteryExamplesText mastery) ]
 
 
-masteryExamplesText : Mastery -> String
+masteryExamplesText : Completion -> String
 masteryExamplesText mastery =
     if mastery.examples then
         "Examples Complete"
@@ -397,7 +397,7 @@ masteryExamplesText mastery =
         "Examples Incomplete"
 
 
-masteryResearchBtn : Mastery -> ClickMsg -> Html Msg
+masteryResearchBtn : Completion -> ClickMsg -> Html Msg
 masteryResearchBtn mastery clickMsg =
     button
         [ classList
@@ -410,7 +410,7 @@ masteryResearchBtn mastery clickMsg =
         [ text (masteryResearchText mastery) ]
 
 
-masteryResearchText : Mastery -> String
+masteryResearchText : Completion -> String
 masteryResearchText mastery =
     if mastery.moreResearch then
         "Needs More Research"
@@ -419,7 +419,7 @@ masteryResearchText mastery =
         "No Research Necessary"
 
 
-masteryPracticeBtn : Mastery -> ClickMsg -> Html Msg
+masteryPracticeBtn : Completion -> ClickMsg -> Html Msg
 masteryPracticeBtn mastery clickMsg =
     button
         [ classList
@@ -432,7 +432,7 @@ masteryPracticeBtn mastery clickMsg =
         [ text (masteryPracticeText mastery) ]
 
 
-masteryPracticeText : Mastery -> String
+masteryPracticeText : Completion -> String
 masteryPracticeText mastery =
     if mastery.morePractice then
         "Needs More Practice"
