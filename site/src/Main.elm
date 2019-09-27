@@ -57,18 +57,18 @@ update msg model =
         DisplayBook currentBook ->
             case msg of
                 SelectedBook book ->
-                    Debug.log "Loaded book" ( DisplayBook book, Cmd.none )
+                    ( DisplayBook book, Cmd.none )
 
                 ToggleMastery clickEvent ->
                     case clickEvent.msgType of
                         PartRecord ->
-                            Debug.log "this should be updating the book..." ( togglePartMastery clickEvent currentBook, Cmd.none )
+                            ( updatePartMastery clickEvent currentBook, Cmd.none )
 
                         ChapterRecord ->
-                            Debug.log "Chapter updated?" ( DisplayBook (toggleChapterMastery clickEvent currentBook), Cmd.none )
+                            ( updateChapterMastery clickEvent currentBook, Cmd.none )
 
         _ ->
-            Debug.log "Nothing... happened?" ( model, Cmd.none )
+            ( model, Cmd.none )
 
 
 getPart : Int -> Book -> Maybe Part
@@ -106,8 +106,8 @@ togglePractice mastery =
     { mastery | morePractice = not mastery.morePractice }
 
 
-togglePartMastery : ClickMsg -> Book -> Model
-togglePartMastery msg book =
+updatePartMastery : ClickMsg -> Book -> Model
+updatePartMastery msg book =
     let
         maybePart =
             getPart msg.partIdx book
@@ -115,43 +115,135 @@ togglePartMastery msg book =
         updatedMastery =
             case maybePart of
                 Nothing ->
-                    Debug.log "Found nothing for maybePart" Nothing
+                    Nothing
 
                 Just part ->
                     case part.mastery of
                         Nothing ->
-                            Debug.log "Found nothing for maybePart.mastery" Nothing
+                            Nothing
 
                         Just mastery ->
-                            Debug.log "Toggling mastery" Just (toggleRead mastery)
+                            case msg.mastery of
+                                "read" ->
+                                    Just (toggleRead mastery)
+
+                                "examples" ->
+                                    Just (toggleExample mastery)
+
+                                "moreResearch" ->
+                                    Just (toggleResearch mastery)
+
+                                "morePractice" ->
+                                    Just (togglePractice mastery)
+
+                                _ ->
+                                    Nothing
 
         updatedPart =
             case maybePart of
                 Nothing ->
-                    Debug.log "Found nothing for maybePart" Nothing
+                    Nothing
 
                 Just part ->
                     case updatedMastery of
                         Nothing ->
-                            Debug.log "Found nothing for maybePart.mastery" Nothing
+                            Nothing
 
                         Just mastery ->
-                            Debug.log "Setting new mastery for part" Just { part | mastery = Just mastery }
+                            Just { part | mastery = Just mastery }
 
         updatedBook =
             case updatedPart of
                 Nothing ->
-                    Debug.log "Found nothing for updatedPart" Nothing
+                    Nothing
 
                 Just newPart ->
-                    Debug.log "Setting new part on book object" Just { book | parts = set msg.partIdx newPart book.parts }
+                    Just { book | parts = set msg.partIdx newPart book.parts }
     in
     case updatedBook of
         Nothing ->
-            Debug.log "error updating book" ErrorUpdatingBook book "Unable to update book!"
+            ErrorUpdatingBook book "Unable to update book!"
 
         Just newBook ->
-            Debug.log "this should be getting the new book :thinking_face:" DisplayBook newBook
+            DisplayBook newBook
+
+
+updateChapterMastery : ClickMsg -> Book -> Model
+updateChapterMastery msg book =
+    let
+        maybePart =
+            getPart msg.partIdx book
+
+        maybeChapter =
+            getChapter msg.chapterIdx msg.partIdx book
+
+        updatedMastery =
+            case maybeChapter of
+                Nothing ->
+                    Nothing
+
+                Just chapter ->
+                    case chapter.mastery of
+                        Nothing ->
+                            Nothing
+
+                        Just mastery ->
+                            case msg.mastery of
+                                "read" ->
+                                    Just (toggleRead mastery)
+
+                                "examples" ->
+                                    Just (toggleExample mastery)
+
+                                "moreResearch" ->
+                                    Just (toggleResearch mastery)
+
+                                "morePractice" ->
+                                    Just (togglePractice mastery)
+
+                                _ ->
+                                    Nothing
+
+        updatedChapter =
+            case maybeChapter of
+                Nothing ->
+                    Nothing
+
+                Just chapter ->
+                    case updatedMastery of
+                        Nothing ->
+                            Nothing
+
+                        Just newMastery ->
+                            Just { chapter | mastery = Just newMastery }
+
+        updatedPart =
+            case maybePart of
+                Nothing ->
+                    Nothing
+
+                Just part ->
+                    case updatedChapter of
+                        Nothing ->
+                            Nothing
+
+                        Just newChapter ->
+                            Just { part | chapters = set msg.chapterIdx newChapter part.chapters }
+
+        updatedBook =
+            case updatedPart of
+                Nothing ->
+                    Nothing
+
+                Just newPart ->
+                    Just { book | parts = set msg.partIdx newPart book.parts }
+    in
+    case updatedBook of
+        Nothing ->
+            ErrorUpdatingBook book "Unable to update book!"
+
+        Just newBook ->
+            DisplayBook newBook
 
 
 toggleChapterMastery : ClickMsg -> Book -> Book
@@ -230,9 +322,9 @@ partContent partIdx part =
 
 
 chapterContent : Int -> ( Int, Chapter ) -> Html Msg
-chapterContent partIdx chapterTuple =
+chapterContent chapterIdx chapterTuple =
     let
-        chapterIdx =
+        partIdx =
             Tuple.first chapterTuple
 
         chapter =
@@ -260,10 +352,10 @@ buttonContent chapterOrPart partIdx chapterIdx msgType =
         Just mastery ->
             text chapterOrPart.name
                 :: div []
-                    [ masteryReadBtn mastery (ClickMsg partIdx chapterIdx "read" msgType)
-                    , masteryExamplesBtn mastery (ClickMsg partIdx chapterIdx "examples" msgType)
-                    , masteryResearchBtn mastery (ClickMsg partIdx chapterIdx "moreResearch" msgType)
-                    , masteryPracticeBtn mastery (ClickMsg partIdx chapterIdx "morePractice" msgType)
+                    [ masteryReadBtn mastery { partIdx = partIdx, chapterIdx = chapterIdx, mastery = "read", msgType = msgType }
+                    , masteryExamplesBtn mastery { partIdx = partIdx, chapterIdx = chapterIdx, mastery = "examples", msgType = msgType }
+                    , masteryResearchBtn mastery { partIdx = partIdx, chapterIdx = chapterIdx, mastery = "moreResearch", msgType = msgType }
+                    , masteryPracticeBtn mastery { partIdx = partIdx, chapterIdx = chapterIdx, mastery = "morePractice", msgType = msgType }
                     ]
                 :: []
 
